@@ -1,0 +1,10 @@
+# Folders
+node_modules
+gen
+resources
+dist
+mta_archives
+
+# Environment Files
+.env
+default-env.json

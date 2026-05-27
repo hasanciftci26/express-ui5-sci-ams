@@ -1,0 +1,33 @@
+{
+    "name": "express-ui5-sci-ams-srv",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Express.js server for the sample fullstack application using SAP Cloud Identity Services and Authozation Management Service for authentication and authorization operations.",
+    "author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hasanciftci26/express-ui5-sci-ams"
+    },
+    "keywords": [
+        "express",
+        "sap-cloud-identity-services",
+        "authorization-management-service",
+        "authentication",
+        "authorization"
+    ],
+    "license": "UNLICENSED",
+    "main": "server.js",
+    "dependencies": {
+        "@sap/xssec": "^4.13.0",
+        "express": "^5.2.1"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.9.1",
+        "tsx": "^4.22.3",
+        "typescript": "^6.0.3"
+    },
+    "scripts": {
+        "local-start": "tsx server.ts"
+    }
+}

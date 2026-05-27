@@ -1,0 +1,23 @@
+{
+	"name": "express-ui5-sci-ams",
+	"version": "1.0.0",
+	"description": "Sample fullstack application using SAP Cloud Identity Services and Authozation Management Service for authentication and authorization operations.",
+	"author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hasanciftci26/express-ui5-sci-ams"
+	},
+	"keywords": [
+		"express",
+		"sapui5",
+		"fullstack",
+		"sap-cloud-identity-services",
+		"authorization-management-service",
+		"authentication",
+		"authorization"
+	],
+	"license": "UNLICENSED",
+	"devDependencies": {
+		"mbt": "^1.2.49"
+	}
+}
