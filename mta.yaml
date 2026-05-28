@@ -54,6 +54,8 @@ modules:
       ignore:
         - default-env.json
         - .env
+    deployed-after: 
+      - express-ui5-sci-ams-db-deployer
 
 # ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # Database Deployer Module
@@ -68,6 +70,28 @@ modules:
       buildpack: nodejs_buildpack
     requires:
       - name: express-ui5-sci-ams-db
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# AMS DCL Deployer Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-dcl-deployer
+    type: javascript.nodejs
+    path: ams
+    parameters:
+      buildpack: nodejs_buildpack
+      no-route: true
+      no-start: true
+      tasks:
+        - name: deploy-dcl
+          command: npm start
+          memory: 512M
+    requires:
+      - name: express-ui5-sci-ams-ias
+        parameters:
+          config:
+            credential-type: X509_GENERATED
+            app-identifier: policy-deployer
 
 # ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 # AppRouter Module
