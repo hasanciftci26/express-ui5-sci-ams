@@ -2,7 +2,7 @@
     "name": "express-ui5-sci-ams-router",
     "version": "1.0.0",
     "type": "module",
-    "description": "Standalone SAP AppRouter for the sample fullstack application using SAP Cloud Identity Services and Authozation Management Service for authentication and authorization operations.",
+    "description": "Standalone SAP AppRouter for the sample fullstack application using SAP Cloud Identity Services and Authorization Management Service for authentication and authorization operations.",
     "author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
     "repository": {
         "type": "git",
