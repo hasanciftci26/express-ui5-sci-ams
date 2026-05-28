@@ -1,0 +1,30 @@
+<mvc:View
+    controllerName="sap.sci.ams.ui.controller.Homepage"
+    displayBlock="true"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+>
+    <Page
+        id="Homepage"
+        showHeader="false"
+    >
+        <content>
+            <f:ShellBar
+                id="sbHeader"
+                title="Express UI5 SCI AMS"
+                homeIcon="img/app_logo.png"
+                busyIndicatorDelay="0"
+            >
+                <f:profile>
+                    <Avatar initials="GX" />
+                </f:profile>
+            </f:ShellBar>
+            <FlexBox justifyContent="Center">
+                <VBox width="95%">
+                </VBox>
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>

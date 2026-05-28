@@ -1,0 +1,33 @@
+{
+    "name": "express-ui5-sci-ams-ui",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "SAPUI5 application for the sample fullstack application using SAP Cloud Identity Services and Authozation Management Service for authentication and authorization operations.",
+    "author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hasanciftci26/express-ui5-sci-ams"
+    },
+    "keywords": [
+        "sapui5",
+        "sap-cloud-identity-services",
+        "authorization-management-service",
+        "authentication",
+        "authorization"
+    ],
+    "license": "UNLICENSED",
+    "devDependencies": {
+        "@sap/ui5-builder-webide-extension": "^1.1.10",
+        "@sap/ux-ui5-tooling": "^1.25.0",
+        "@sapui5/types": "1.148.1",
+        "@ui5/cli": "^4.0.55",
+        "typescript": "^6.0.3",
+        "ui5-task-zipper": "^3.6.1",
+        "ui5-tooling-transpile": "^3.11.1"
+    },
+    "scripts": {
+        "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+        "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+        "build:dev": "ui5 build --config ui5-dev.yaml --exclude-task=uglify --exclude-task=cssmin --exclude-task=minify --exclude-task=generateComponentPreload --exclude-task=generateCachebusterInfo --exclude-task=generateVersionInfo --exclude-task=generateFlexChangesBundle"
+    }
+}
