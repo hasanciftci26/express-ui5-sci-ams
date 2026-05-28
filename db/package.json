@@ -1,0 +1,27 @@
+{
+    "name": "express-ui5-sci-ams-db",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "DB module for the sample fullstack application using SAP Cloud Identity Services and Authorization Management Service for authentication and authorization operations.",
+    "author": "Hasan Çiftçi (hasanciftcii26@gmail.com)",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hasanciftci26/express-ui5-sci-ams"
+    },
+    "keywords": [
+        "hana",
+        "database",
+        "sap-cloud-identity-services",
+        "authorization-management-service",
+        "authentication",
+        "authorization"
+    ],
+    "license": "UNLICENSED",
+    "dependencies": {
+        "@sap/hana-client": "^2.28.20",
+        "@sap/hdi-deploy": "^5.6.1"
+    },
+    "scripts": {
+        "start": "node node_modules/@sap/hdi-deploy/"
+    }
+}
