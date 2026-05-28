@@ -1,0 +1,211 @@
+_schema-version: 3.3.0
+ID: express-ui5-sci-ams
+version: 1.0.0
+description: "Express UI5 SCI AMS"
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+#                                                                     BUILD PARAMETERS
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+        - npm run build-ts
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+#                                                                         MODULES
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+modules:
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# Node.js Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-srv
+    type: nodejs
+    path: gen/srv
+    requires:
+      - name: express-ui5-sci-ams-db
+      - name: express-ui5-sci-ams-dest
+      - name: express-ui5-sci-ams-ias
+        parameters:
+          config:
+            credential-type: X509_GENERATED
+            app-identifier: express-ui5-sci-ams-srv
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-http-endpoint: /health
+      readiness-health-check-type: http
+      disk-quota: 512M
+      memory: 512M
+    build-parameters:
+      builder: npm
+      ignore:
+        - default-env.json
+        - .env
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# Database Deployer Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-db-deployer
+    type: hdb
+    path: db
+    parameters:
+      disk-quota: 256M
+      memory: 256M    
+      buildpack: nodejs_buildpack
+    requires:
+      - name: express-ui5-sci-ams-db
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# AppRouter Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #      
+
+  - name: express-ui5-sci-ams
+    type: approuter.nodejs
+    path: app/router
+    requires:
+      - name: express-ui5-sci-ams-dest
+      - name: express-ui5-sci-ams-repo-runtime
+      - name: srv-api
+        group: destinations
+        properties:
+          name: backend-api
+          url: "~{srv-url}"
+          forwardAuthToken: true
+      - name: express-ui5-sci-ams-ias
+        parameters:
+          config:
+            credential-type: X509_GENERATED
+            app-identifier: express-ui5-sci-ams-srv
+    parameters:
+      disk-quota: 512M
+      memory: 512M    
+      keep-existing-routes: true
+    properties:
+      SESSION_TIMEOUT: 30
+      INCOMING_CONNECTION_TIMEOUT: 0
+      npm_config_cache: .npmcache
+      npm_config_prefer_offline: true
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# HTML5 Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: sapsciamsui
+    type: html5
+    path: app/express-ui5-sci-ams-ui
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []      
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# UI Deployer Module
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: express-ui5-sci-ams-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: sapsciamsui
+          target-path: resources/
+          artifacts:
+            - sapsciamsui.zip
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+#                                                                        RESOURCES
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+resources:
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# HDI Container Service
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-container-name: '${service-name}'
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# SAP Cloud Identity Services Instance
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-ias
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: identity
+      service-name: express-ui5-sci-ams-ias
+      service-plan: application
+      path: ./ias-config.json
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# Destination Service
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+
+  - name: express-ui5-sci-ams-dest
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: false
+        init_data:
+          instance:
+            destinations:
+              - Name: backend-api
+                Description: Express.js Service Destination
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                HTML5.Timeout: 300000
+            existing_destinations_policy: update
+      service: destination
+      service-plan: lite
+    requires:
+      - name: srv-api
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# HTML5 Repo Host Service
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #      
+
+  - name: express-ui5-sci-ams-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+# HTML5 Repo Runtime Service
+# ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #  
+
+  - name: express-ui5-sci-ams-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime            
